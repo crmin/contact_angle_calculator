@@ -109,6 +109,7 @@ print('angle:', angle_degree_left)
 img_pil = Image.fromarray(original_img)
 draw = ImageDraw.Draw(img_pil)
 
+fontpath = './d2coding.ttc'
 font = ImageFont.truetype(fontpath, 18)
 draw.text((10, 10), f'θ={angle_degree_left:.2f}', font=font, fill=(255, 0, 255))
 original_img = np.array(img_pil)
