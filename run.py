@@ -86,7 +86,7 @@ elif len_detected_lines >= 3 and len_detected_lines <= 4:
 
 for detected_line in detected_lines:
     x1, y1, x2, y2 = detected_line
-    cv.line(original_img,(x1,y1),(x2,y2),(255, 255, 0),2)
+    cv.line(original_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
 
 for detected_line in detected_lines:
     detected_line_point = [str(point) for point in detected_line]
@@ -108,10 +108,6 @@ print('angle:', angle_degree_left)
 
 img_pil = Image.fromarray(original_img)
 draw = ImageDraw.Draw(img_pil)
-
-fontpath = './d2coding.ttc'
-font_bg = ImageFont.truetype(fontpath, 18)
-draw.text((10, 10), f'θ={angle_degree_left:.2f}', font=font_bg, fill=(255, 255, 255))
 
 font = ImageFont.truetype(fontpath, 18)
 draw.text((10, 10), f'θ={angle_degree_left:.2f}', font=font, fill=(255, 0, 255))
