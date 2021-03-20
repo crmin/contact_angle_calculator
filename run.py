@@ -4,115 +4,58 @@ import cv2 as cv
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
-# img = cv.imread('sample.png')
-img = cv.imread(sys.argv[1])
-original_img = img
+from processor import *
+from calculator import *
 
-hsv = cv.cvtColor(img,cv.COLOR_BGR2HSV)
-# lower = np.array([-10, 100, 100], dtype = "uint8")
-# upper = np.array([10, 255, 255], dtype = "uint8")
 
-# *******************************************************
-# # Set range for red color and
-# # define mask
-# red_lower = np.array([136, 87, 111], np.uint8)
-# red_upper = np.array([180, 255, 255], np.uint8)
-# red_mask = cv.inRange(hsvFrame, red_lower, red_upper)
+if __name__ == '__main__':
+    img = load_img(sys.argv[1])
 
-# # Set range for green color and
-# # define mask
-# green_lower = np.array([25, 52, 72], np.uint8)
-# green_upper = np.array([102, 255, 255], np.uint8)
-# green_mask = cv.inRange(hsvFrame, green_lower, green_upper)
+    circle_img = find_circle(img)
+    elipse_axies = get_elipse_axis(circle_img)
+    circle_top, circle_right, circle_bottom, circle_left = elipse_axies
 
-# # Set range for blue color and
-# # define mask
-# blue_lower = np.array([94, 80, 2], np.uint8)
-# blue_upper = np.array([120, 255, 255], np.uint8)
-# blue_mask = cv.inRange(hsvFrame, blue_lower, blue_upper)
-# *******************************************************
+    draw_elipse_axises(img, elipse_axies)
 
-lower = np.array([-10, 100, 100])
-upper = np.array([10, 255, 255])
-mask = cv.inRange(hsv, lower, upper)
-img = cv.bitwise_and(img, img, mask=mask)
-img = cv.bitwise_not(img)
+    print('circle_top:', circle_top)
+    print('circle_bottom:', circle_bottom)
+    print('circle_left:', circle_left)
+    print('circle_right:', circle_left)
 
-# ################ HoughLines
-# gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-# edges = cv.Canny(gray,50,200)
-# lines = cv.HoughLines(edges,1,np.pi/180,200)
 
-# for idx, line in enumerate(lines):
-#     print(idx)
-#     rho,theta = line[0]
-#     a = np.cos(theta)
-#     b = np.sin(theta)
-#     x0 = a*rho
-#     y0 = b*rho
-#     x1 = int(x0 + 1000*(-b))
-#     y1 = int(y0 + 1000*(a))
-#     x2 = int(x0 - 1000*(-b))
-#     y2 = int(y0 - 1000*(a))
-#     cv.line(img,(x1,y1),(x2,y2),(0,255,255),2)
-#     break
+    # @@@ 파란 원과 수평선의 접점 계산
+    # 수평선은 이론상 x축에 평행해야하지만 실제로는 다를 수 있으므로 왼쪽 끝과 오른쪽 끝 점의 y좌표를 구해서 평균으로 사용
 
-# cv.imshow("result", img)
-# # cv.imshow("result", gray)
-# cv.waitKey(0)
+    line_img = find_parallel_line(img)
 
-# ################ HoughLinesP
-gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-edges = cv.Canny(gray, 50, 150)
-lines = cv.HoughLinesP(edges, 1, np.pi / 180, 100, minLineLength=100, maxLineGap=10)
+    parallel_line = detect_parallel_line(line_img)
+    x1, y1, x2, y2 = parallel_line
 
-detected_lines = []
+    # 선 인식 문제로 중간부터 그릴 경우 처음부터 그리기 위함
+    parallel_line = extend_parallel_line(img, parallel_line)
+    parallel_line_y = (parallel_line[1] + parallel_line[3]) // 2
 
-for idx, line in enumerate(lines):
-    # if idx % 2:
-    #     continue
-    x1, y1, x2, y2 = line[0]
-    detected_lines.append(line[0])
-    # cv.line(original_img,(x1,y1),(x2,y2),(255, 255, 0),2)
+    print('parallel_line:', parallel_line[:2], parallel_line[2:])
+    print('parallel_line_y:', parallel_line_y)
+    print(f'parallel_equation: y={parallel_line_y}')
 
-print('detected_lines:', detected_lines)
+    draw_detected_parallel_line(img, parallel_line)
 
-len_detected_lines = len(detected_lines)
-print('len of detected_lines:', len_detected_lines)
-if len_detected_lines == 2:
-    pass
-elif len_detected_lines >= 3 and len_detected_lines <= 4:
-    detected_lines = [each for idx, each in enumerate(detected_lines) if idx % 2 == 0]
+    # 접점 계산
+    contact_point = get_contact_point(elipse_axies, parallel_line)
+    print('contact_point:', contact_point)
+    draw_contact_point(img, contact_point)
 
-for detected_line in detected_lines:
-    x1, y1, x2, y2 = detected_line
-    cv.line(original_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
+    # @@@ 접점 이용해서 접선 구하기
+    contact_line = get_contact_line(contact_point, elipse_axies)
+    print('contact line point:', contact_line)
+    draw_contact_line(img, contact_line)
 
-for detected_line in detected_lines:
-    detected_line_point = [str(point) for point in detected_line]
-    print(', '.join(detected_line_point))
+    # @@@ 구해진 값을 이용해서 각도 계산
+    angle_degree = get_contact_angle(parallel_line, contact_line)
+    print('angle:', angle_degree)
 
-((x1, y1, x2, y2), (x3, y3, x4, y4)) = detected_lines
+    img = draw_angle(img, angle_degree)
 
-# get angle
-numerator = (x1 - x2) * (x3 - x4) + (y1 - y2) * (y3 - y4)
-denominator = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2) * np.sqrt((x3 - x4) ** 2 + (y3 - y4) ** 2)
-angle = np.arccos(numerator / denominator)
-angle_degree = np.rad2deg(angle)
-angle_degree_left = 180 - angle_degree
-
-print('angle:', angle_degree_left)
-
-# font = cv.FONT_HERSHEY_SIMPLEX
-# cv.putText(original_img, f'θ={angle_degree_left:.2f}', (10,40), font, 1, (255, 0, 255), 2, cv.LINE_AA)
-
-img_pil = Image.fromarray(original_img)
-draw = ImageDraw.Draw(img_pil)
-
-fontpath = './d2coding.ttc'
-font = ImageFont.truetype(fontpath, 18)
-draw.text((10, 10), f'θ={angle_degree_left:.2f}', font=font, fill=(255, 0, 255))
-original_img = np.array(img_pil)
-
-cv.imshow("result", original_img)
-cv.waitKey(0)
+    cv.imshow("result", img)
+    cv.waitKey(0)
