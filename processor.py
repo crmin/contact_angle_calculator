@@ -9,6 +9,11 @@ def load_img(path):
     img = cv.imread(path)
     return img
 
+def load_img_from_binary(binary):
+    encoded_img = np.fromstring(binary, dtype=np.uint8)
+    img = cv.imdecode(encoded_img, cv.IMREAD_COLOR)
+    return img
+
 def find_circle(img):
     hsv = cv.cvtColor(img,cv.COLOR_BGR2HSV)
 

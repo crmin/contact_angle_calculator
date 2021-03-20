@@ -9,7 +9,10 @@ from calculator import *
 
 
 if __name__ == '__main__':
-    img = load_img(sys.argv[1])
+    # img = load_img(sys.argv[1])
+    with open(sys.argv[1], 'rb') as f:
+        img_binary = f.read()
+    img = load_img_from_binary(img_binary)
 
     circle_img = find_circle(img)
     elipse_axies = get_elipse_axis(circle_img)
