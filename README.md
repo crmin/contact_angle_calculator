@@ -56,3 +56,6 @@ python run.py <image_file_path>
 
 # Used Open Sources
 * [D2Coding Font](https://github.com/naver/d2codingfont), [Open Font License](https://github.com/naver/d2codingfont/wiki/Open-Font-License)
+
+# LICENSE
+[Beerware](https://github.com/crmin/surface_tension_angle/blob/master/LICENSE.md)
