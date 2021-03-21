@@ -1,4 +1,5 @@
 import sys
+from base64 import b64encode
 
 import cv2 as cv
 import numpy as np
@@ -72,3 +73,9 @@ def draw_angle(img, angle, fontpath='./d2coding.ttc'):
     draw.text((10, 10), f'θ={angle:.2f}', font=font, fill=(255, 0, 255))
     img = np.array(img_pil)
     return img
+
+def convert_image_to_base64(img):
+    _, im_arr = cv.imencode('.jpg', img)  # im_arr: image in Numpy one-dim array format.
+    im_bytes = im_arr.tobytes()
+    im_b64 = b64encode(im_bytes)
+    return im_b64.decode()

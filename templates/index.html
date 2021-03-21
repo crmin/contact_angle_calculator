@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contact angle calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css"
+        integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 1em 2em;
+        }
+        .blue {
+            color: #41719c;
+        }
+        .bg-blue {
+            color: white;
+            background-color: #41719c;
+        }
+        .red {
+            color: #ff0000;
+        }
+        .bg-red {
+            color: white;
+            background-color: #ff0000;
+        }
+        .tutorial-example-img {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <a href="/">Contact Angle Calculator</a>
+    </h1>
+    <div id="calculator">
+        <fieldset class="fieldset">
+            <legend>Calculator</legend>
+            <form action="{{ url_for('index') }}" method="POST", enctype="multipart/form-data">
+                <fieldset class="fieldset">
+                    <legend>Result image options</legend>
+                    <div class="cell">
+                        <input id="show-detected-line" type="checkbox" name="show_detected_line" checked="checked">
+                        <label for="show-detected-line">
+                            Show detected line mark
+                            <small>(cyan color line over red line)</small>
+                        </label>
+                    </div>
+                    <div class="cell">
+                        <input id="show-ellipse-axises" type="checkbox" name="show_ellipse_axies" checked="checked">
+                        <label for="show-ellipse-axises">
+                            Show ellipse axies point
+                            <small>(red, yellow, green, blue dots over ellipse)</small>
+                        </label>
+                    </div>
+                    <div class="cell">
+                        <input id="show-contact-angle" type="checkbox" name="show_contact_angle" checked="checked">
+                        <label for="show-contact-angle">
+                            Show contact angle over image at left top
+                        </label>
+                    </div>
+                    <div class="cell">
+                        <input id="show-contact-point" type="checkbox" name="show_contact_point" checked="checked">
+                        <label for="show-contact-point">
+                            Show contact point over image
+                            <small>(Black bordered circle)</small>
+                        </label>
+                    </div>
+                    <div class="cell">
+                        <input id="show-contact-line" type="checkbox" name="show_contact_line" checked="checked">
+                        <label for="show-contact-line">
+                            Show contact line over image at contact point
+                        </label>
+                    </div>
+                </fieldset>
+
+                <label for="image">Choose decorated image</label>
+                <input id="image" type="file" name="image">
+                <button type="submit" class="button">Calculate</button>
+            </form>
+            <div id="calculate-result">
+                {% block result_show %}{% endblock %}
+            </div>
+        </fieldset>
+    </div>
+    <div id="tutorial">
+        <fieldset class="fieldset">
+            <legend>Tutorial</legend>
+            <h3>1. Decorate Image</h3>
+            <ol>
+                <li>Prepare contact angle image.</li>
+                <li>
+                    Draw <strong class="blue">BLUE</strong> bordered ellipse over liquid drop.<br>
+                    <small>You can use any blue color but, reference color is <code class="bg-blue">#41719c</code></small>
+                </li>
+                <li>
+                    Draw <strong class="red">RED</strong> line over surface boundary.<br>
+                    <small>You can use any red color but, reference color is <code class="bg-red">#ff0000</code></small>
+                </li>
+            </ol>
+            <img src="https://user-images.githubusercontent.com/8157830/111880792-d2662d00-89f0-11eb-9b75-02133837f225.png" class="tutorial-example-img">
+            <h3>2. Update and Calculate</h3>
+            <ol>
+                <li>Click "Choose decorate image" button in this page.</li>
+                <li>Open decorated image file.</li>
+                <li>Click "Calculate" button.</li>
+                <li>Program calculate contact angle and show image and data.</li>
+            </ol>
+        </fieldset>
+    </div>
+</body>
+</html>
