@@ -3,6 +3,10 @@
 ## Web Demo Setup
 ### Prepare
 1. Install docker
+1. Build docker
+    ```
+    docker build --tag contact_angle_calculator .
+    ```
 
 ### Start
 ```
