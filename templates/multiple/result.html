@@ -1,0 +1,54 @@
+{% extends 'multiple/index.html' %}
+
+{% block result_show %}
+{% if error %}
+    <div class="callout warning">
+        {{ error_msg | safe}}
+    </div>
+{% else %}
+    {% for render_image in render_images %}
+        <div class="grid-x">
+            <div class="cell small-12 medium-4">
+                <h3>Original image</h3>
+                <img src="data:image/jpg;base64, {{render_image.original_image}}" class="result-group-img original-img">
+            </div>
+            <div class="cell small-12 medium-4">
+                <h3>Calculated image</h3>
+                <img src="data:image/jpg;base64, {{render_image.result_image}}" class="result-group-img result-img">
+            </div>
+            <div class="cell small-12 medium-4">
+                <h3>Calculated result values</h3>
+                <ul>
+                    <li>
+                        Ellipse axies coordinates
+                        <ul>
+                            <li>top: {{render_image.circle.top}}</li>
+                            <li>right: {{render_image.circle.right}}</li>
+                            <li>bottom: {{render_image.circle.bottom}}</li>
+                            <li>left: {{render_image.circle.left}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Parallel line
+                        <ul>
+                            <li>line: {{render_image.parallel.line}}</li>
+                            <li>line_y: {{render_image.parallel.line_y}}</li>
+                            <li>parallel_equation: {{render_image.parallel.parallel_equation}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Contact point
+                        <ul>
+                            <li>contact_point: {{ render_image.contact_point }}</li>
+                            <li>contact_line_point: {{ render_image.contact_line_point[0] }} to {{ render_image.contact_line_point[1] }}</li>
+                            <li>
+                                <strong>angle: {{ render_image.angle }}°</strong>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block form_action %}{{ url_for('multiple') }}{% endblock %}
+{% block image_form %}
+<input id="images" type="file" name="images" multiple="multiple">
+{% endblock %}
