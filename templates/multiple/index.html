@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block form_action %}{{ url_for('multiple') }}{% endblock %}
+{% block image_form_label %}
+<br>You can upload multiple file. Click image while press control(command in mac) or shift button.
+{% endblock %}
 {% block image_form %}
 <input id="images" type="file" name="images" multiple="multiple">
 {% endblock %}

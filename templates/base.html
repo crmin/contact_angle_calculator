@@ -75,7 +75,10 @@
                     </div>
                 </fieldset>
 
-                <label for="image">Choose decorated image</label>
+                <label for="image">
+                    Choose decorated image
+                    <small>{% block image_form_label %}{% endblock %}</small>
+                </label>
                 <!-- <input id="image" type="file" name="image"> -->
                 {% block image_form %}{% endblock %}
                 <button type="submit" class="button">Calculate</button>
